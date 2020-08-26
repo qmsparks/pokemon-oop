@@ -1,4 +1,4 @@
-const deck = [
+const cards = [
   {
     name: "Bulbasaur",
     damage: 60
@@ -59,7 +59,7 @@ const deck = [
 
 class Game {
   constructor() {
-    this.deck = deck;
+    this.deck = [];
     this.cpu = {
       name: 'Computer',
       roundsWon: 0
@@ -70,16 +70,21 @@ class Game {
     };
   }
 
-  /* Methods */
   shuffle() {
+    const baseDeck = cards;
 
+    while(baseDeck.length > 0) {
+      let index = Math.floor(Math.random() * baseDeck.length);
+      this.deck.push(baseDeck.splice(index, 1)[0]);
+    }
   }
 }
 
 
+
 class Round extends Game { 
   constructor() {
-    super(player);
+    super();
     this.playerScore = 0;
     this.computerScore = 0;
   }
