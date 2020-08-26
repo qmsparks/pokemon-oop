@@ -58,10 +58,17 @@ const deck = [
 
 
 class Game {
-  /* Properties */
-  // The Deck
-  // Players
-  // Total score
+  constructor() {
+    this.deck = deck;
+    this.cpu = {
+      name: 'Computer',
+      roundsWon: 0
+    };
+    this.player = {
+      name: 'Eggbert',
+      roundsWon: 0
+    };
+  }
 
   /* Methods */
   shuffle() {
@@ -69,21 +76,31 @@ class Game {
   }
 }
 
+
 class Round extends Game { 
-/* Properties */
-// Subscore
+  constructor() {
+    super(player);
+    this.playerScore = 0;
+    this.computerScore = 0;
+  }
 
 /* Methods */
-deal() {
+  deal() {
 
+  }
 }
 
-}
+
 
 class Player {
 /* Properties */
 // Hand
 
 /* Methods */
+  winHand() {
 
+  }
+  winRound() {
+
+  }
 }
