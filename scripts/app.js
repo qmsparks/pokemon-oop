@@ -79,8 +79,6 @@ class Game {
 
 class Round { 
   constructor() {
-    this.playerScore = 0;
-    this.computerScore = 0;
     // Push objects with player and cpu cards played into this.plays to track the history
     this.plays = [];
   }
@@ -97,6 +95,21 @@ class Round {
       }
     }
   }
+  playHand() {
+    let playerCard = {};
+    let computerCard = {};
+    // Player chooses a card from their hand
+
+    // But just for testing purposes:
+    playerCard = game.player.chooseRandomCard();
+
+    computerCard = game.cpu.chooseRandomCard();
+
+    this.plays.push({player: playerCard, computer: computerCard});
+    // Computer chooses a card at random
+    // Compare attack values
+    // Card with the higher attack value nets its player a point
+  }
 }
 
 class Player {
@@ -108,11 +121,15 @@ constructor(name) {
 }
 
 /* Methods */
+  chooseRandomCard() {
+    let index = Math.floor(Math.random() * this.hand.length);
+    return this.hand.splice(index, 1)[0];
+  }
   winHand() {
-
+    this.roundScore++;
   }
   winRound() {
-
+    this.gameScore ++;
   }
 }
 
@@ -121,5 +138,14 @@ const game = new Game;
 game.shuffle();
 game.newRound();
 game.rounds[0].deal();
-console.log(game.cpu.hand);
-console.log(game.player.hand);
+
+console.log(game.cpu);
+console.log(game.player);
+
+game.rounds[0].playHand();
+console.log(game.cpu);
+console.log(game.player);
+console.log(game.rounds[0].plays);
+
+
+
