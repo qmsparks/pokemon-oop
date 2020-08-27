@@ -56,70 +56,65 @@ const cards = [
   }
 ];
 
-class Game {
+class Deck {
   constructor() {
+    this.baseDeck = cards;
     this.deck = [];
-    this.cpu = new Player('The Computer');
-    this.player = new Player('Eggbert');
-    this.rounds = []
+    this.discard = [];
   }
 
   shuffle() {
-    const baseDeck = cards;
-    while(baseDeck.length > 0) {
-      let index = Math.floor(Math.random() * baseDeck.length);
-      this.deck.push(baseDeck.splice(index, 1)[0]);
+
+    while(this.baseDeck.length > 0) {
+      let index = Math.floor(Math.random() * this.baseDeck.length);
+      this.deck.push(this.baseDeck.splice(index, 1)[0]);
     }
-  }
-
-  newRound() {
-    this.rounds.push(new Round);
-  }
-}
-
-class Round { 
-  constructor() {
-    // Push objects with player and cpu cards played into this.plays to track the history
-    this.plays = [];
   }
 
   deal() {
-    if(game.deck.length < 6) {
-      console.log(`Insufficient cards to deal new hand. Game over.`);
+    if (this.deck.length < 6) {
+      console.log(`Round over`);
     } else {
-      for (let i = 1; i <=3; i++) {
-        game.player.hand.push(game.deck.splice(0, 1)[0]);
-        game.cpu.hand.push(game.deck.splice(0, 1)[0]);
+      for (let i = 1; i <= 3; i++) {
 
+        game.player.hand.push(this.deck.splice(0, 1)[0]);
+        game.cpu.hand.push(this.deck.splice(0,1)[0]);
       }
     }
   }
-  playHand() {
-    let playerCard = {};
-    let computerCard = {};
+
+}
+
+class Game {
+  constructor() {
+    this.cpu = new Player('The Computer');
+    this.player = new Player('Eggbert');    
+  }
+
+  playGame() {
+    // Player and computer both choose cards
+    let computerCard = game.cpu.chooseRandomCard();
+
+    //Grab player card randomly for now
+    let playerCard = game.player.chooseRandomCard();
+
     let winner = {};
-    // TODO allow the player to choose their own card
-    playerCard = game.player.chooseRandomCard();
-
-    computerCard = game.cpu.chooseRandomCard();
-
-    this.plays.push({player: playerCard, computer: computerCard});
-
-    console.log(`${game.player.name} played ${playerCard.name}, with an attack of ${playerCard.damage}`);
-    console.log(`${game.cpu.name} played ${computerCard.name}, with an attack of ${computerCard.damage}`);
 
     if (playerCard.damage === computerCard.damage) {
-      console.log(`Cards have equal damage value. No one scores`);
+      console.log(`${game.player.name}'s ${playerCard.name} and ${game.cpu.name}'s ${computerCard.name} reached a stalemate.`);
     } else {
       winner = (playerCard.damage > computerCard.damage ? game.player : game.cpu);
       winner.winHand();
+
     }
 
-    console.log(`Score`);
-    console.log(`${game.player.name}: ${game.player.roundScore}`);
-    console.log(`${game.cpu.name}: ${game.cpu.roundScore}`);
+    // Score go here also
+    deck.discard.push(computerCard, playerCard);
+    
   }
 }
+
+
 
 class Player {
 constructor(name) {
@@ -135,20 +130,50 @@ constructor(name) {
   }
   winHand() {
     this.roundScore++;
-    console.log(`${this.name} wins the hand.`)
+    console.log(`${this.name} wins the hand.`);
   }
   winRound() {
     this.gameScore ++;
   }
 }
 
-
-
-
+const deck = new Deck;
 const game = new Game;
-game.shuffle();
-game.newRound();
-game.rounds[0].deal();
 
-game.rounds[0].playHand();
+deck.shuffle();
+console.log(deck);
+deck.deal();
+console.log(game.player.hand);
+console.log(game.cpu.hand);
+game.playGame();
+console.log(deck.discard);
 
+
+
+
+
+
+/* class Round { 
+  constructor() {
+    // Push objects with player and cpu cards played into this.plays to track the history
+    this.plays = [];
+  }
+
+  playHand() {
+    let playerCard = {};
+    let computerCard = {};
+    let winner = {};
+    // TODO allow the player to choose their own card
+    playerCard = game.player.chooseRandomCard();
+
+    computerCard = game.cpu.chooseRandomCard();
+
+
+
+   
+
+    console.log(`Score`);
+    console.log(`${game.player.name}: ${game.player.roundScore}`);
+    console.log(`${game.cpu.name}: ${game.cpu.roundScore}`);
+  }
+}*/
