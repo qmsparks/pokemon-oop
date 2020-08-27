@@ -72,16 +72,10 @@ class Deck {
   }
 
   deal() {
-    if (this.deck.length < 6) {
-      console.log(`Round over`);
-    } else {
-      for (let i = 1; i <= 3; i++) {
-
-        game.player.hand.push(this.deck.splice(0, 1)[0]);
-        game.cpu.hand.push(this.deck.splice(0,1)[0]);
-      }
-    }
+      game.player.hand = this.deck.splice(0, 3);
+      game.cpu.hand = this.deck.splice(0, 3);
   }
+  
 
 }
 
@@ -92,25 +86,38 @@ class Game {
   }
 
   playGame() {
-    // Player and computer both choose cards
-    let computerCard = game.cpu.chooseRandomCard();
+    
+    for(let i = 0; i < 3; i++) {
+      this.cpu.chooseRandomCard();
+      this.player.chooseRandomCard();
+      
+      //TODO allow player to choose their card 
+      // this.player.chooseCard();
 
-    //Grab player card randomly for now
-    let playerCard = game.player.chooseRandomCard();
+      let winner = {};
+      let loser = {};
 
-    let winner = {};
+      if (this.player.card.damage === this.cpu.card.damage) {
+        console.log(`${this.player.name}'s ${this.player.card.name} and ${this.cpu.name}'s ${this.cpu.card.name} reach a stalemate.`);
+      } else {
+        winner = (this.player.card.damage > this.cpu.card.damage ? this.player : this.cpu);
+        winner.winHand();
 
-    if (playerCard.damage === computerCard.damage) {
-      console.log(`${game.player.name}'s ${playerCard.name} and ${game.cpu.name}'s ${computerCard.name} reached a stalemate.`);
-    } else {
-      winner = (playerCard.damage > computerCard.damage ? game.player : game.cpu);
-      winner.winHand();
-
+        if(winner === this.player) {
+          loser = this.cpu;
+        } else {
+          loser = this.player;
+        }
+        
+        console.log(`${winner.name}'s ${winner.card.name} beats ${loser.name}'s ${loser.card.name}`);
+      }
     }
 
-    // Score go here also
-    deck.discard.push(computerCard, playerCard);
-    
+    deck.discard.push(this.cpu.card, this.player.card);
+  }
+
+  trackScore() {
+    //  TODO adjust gameScore and resent roundScore at the end of each round
   }
 }
 
@@ -119,18 +126,22 @@ class Game {
 class Player {
 constructor(name) {
   this.name = name;
-  this.hand = [];
   this.roundScore = 0;
   this.gameScore = 0;
+  this.card = {};
 }
 
   chooseRandomCard() {
     let index = Math.floor(Math.random() * this.hand.length);
-    return this.hand.splice(index, 1)[0];
+    this.card = this.hand.splice(index, 1)[0];
   }
+
+  chooseCard() {
+
+  }
+
   winHand() {
     this.roundScore++;
-    console.log(`${this.name} wins the hand.`);
   }
   winRound() {
     this.gameScore ++;
@@ -140,40 +151,15 @@ constructor(name) {
 const deck = new Deck;
 const game = new Game;
 
-deck.shuffle();
-console.log(deck);
-deck.deal();
-console.log(game.player.hand);
-console.log(game.cpu.hand);
-game.playGame();
-console.log(deck.discard);
-
-
-
-
-
-
-/* class Round { 
-  constructor() {
-    // Push objects with player and cpu cards played into this.plays to track the history
-    this.plays = [];
+const beginGame = function() { 
+  deck.shuffle();
+  while(deck.deck.length >= 6) {
+    // console.log(`Dealing new hands`);
+    deck.deal();
+    game.playGame();
+    console.log(`\n`);
   }
-
-  playHand() {
-    let playerCard = {};
-    let computerCard = {};
-    let winner = {};
-    // TODO allow the player to choose their own card
-    playerCard = game.player.chooseRandomCard();
-
-    computerCard = game.cpu.chooseRandomCard();
+}
 
 
-
-   
-
-    console.log(`Score`);
-    console.log(`${game.player.name}: ${game.player.roundScore}`);
-    console.log(`${game.cpu.name}: ${game.cpu.roundScore}`);
-  }
-}*/
+beginGame();
