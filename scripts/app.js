@@ -56,50 +56,56 @@ const cards = [
   }
 ];
 
-
 class Game {
   constructor() {
     this.deck = [];
-    this.cpu = {
-      name: 'Computer',
-      roundsWon: 0
-    };
-    this.player = {
-      name: 'Eggbert',
-      roundsWon: 0
-    };
+    this.cpu = new Player('Computer');
+    this.player = new Player('Eggbert');
+    this.rounds = []
   }
 
   shuffle() {
     const baseDeck = cards;
-
     while(baseDeck.length > 0) {
       let index = Math.floor(Math.random() * baseDeck.length);
       this.deck.push(baseDeck.splice(index, 1)[0]);
     }
   }
+
+  newRound() {
+    this.rounds.push(new Round);
+  }
 }
 
-
-
-class Round extends Game { 
+class Round { 
   constructor() {
-    super();
     this.playerScore = 0;
     this.computerScore = 0;
+    // Push objects with player and cpu cards played into this.plays to track the history
+    this.plays = [];
   }
 
 /* Methods */
   deal() {
+    if(game.deck.length < 6) {
+      console.log(`Insufficient cards to deal new hand. Game over.`);
+    } else {
+      for (let i = 1; i <=3; i++) {
+        game.player.hand.push(game.deck.splice(0, 1)[0]);
+        game.cpu.hand.push(game.deck.splice(0, 1)[0]);
 
+      }
+    }
   }
 }
 
-
-
 class Player {
-/* Properties */
-// Hand
+constructor(name) {
+  this.name = name;
+  this.hand = [];
+  this.roundScore = 0;
+  this.gameScore = 0;
+}
 
 /* Methods */
   winHand() {
@@ -109,3 +115,11 @@ class Player {
 
   }
 }
+
+
+const game = new Game;
+game.shuffle();
+game.newRound();
+game.rounds[0].deal();
+console.log(game.cpu.hand);
+console.log(game.player.hand);
