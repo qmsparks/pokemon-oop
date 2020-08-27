@@ -98,17 +98,27 @@ class Round {
   playHand() {
     let playerCard = {};
     let computerCard = {};
+    let winner = {};
     // Player chooses a card from their hand
 
     // But just for testing purposes:
     playerCard = game.player.chooseRandomCard();
+    
+    console.log(playerCard);
 
     computerCard = game.cpu.chooseRandomCard();
 
+    console.log(computerCard);
+
     this.plays.push({player: playerCard, computer: computerCard});
-    // Computer chooses a card at random
-    // Compare attack values
-    // Card with the higher attack value nets its player a point
+
+    if (playerCard.damage === computerCard.damage) {
+      console.log(`Cards have equal damage value. No one scores`);
+      return;
+    } else {
+      winner = (playerCard.damage > computerCard.damage ? game.player : game.cpu);
+    }
+    winner.winHand();
   }
 }
 
@@ -139,13 +149,9 @@ game.shuffle();
 game.newRound();
 game.rounds[0].deal();
 
-console.log(game.cpu);
-console.log(game.player);
-
 game.rounds[0].playHand();
-console.log(game.cpu);
-console.log(game.player);
-console.log(game.rounds[0].plays);
 
+console.log(game.cpu.roundScore);
+console.log(game.player.roundScore);
 
 
