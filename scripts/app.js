@@ -59,7 +59,7 @@ const cards = [
 class Game {
   constructor() {
     this.deck = [];
-    this.cpu = new Player('Computer');
+    this.cpu = new Player('The Computer');
     this.player = new Player('Eggbert');
     this.rounds = []
   }
@@ -83,7 +83,6 @@ class Round {
     this.plays = [];
   }
 
-/* Methods */
   deal() {
     if(game.deck.length < 6) {
       console.log(`Insufficient cards to deal new hand. Game over.`);
@@ -99,26 +98,26 @@ class Round {
     let playerCard = {};
     let computerCard = {};
     let winner = {};
-    // Player chooses a card from their hand
-
-    // But just for testing purposes:
+    // TODO allow the player to choose their own card
     playerCard = game.player.chooseRandomCard();
-    
-    console.log(playerCard);
 
     computerCard = game.cpu.chooseRandomCard();
 
-    console.log(computerCard);
-
     this.plays.push({player: playerCard, computer: computerCard});
+
+    console.log(`${game.player.name} played ${playerCard.name}, with an attack of ${playerCard.damage}`);
+    console.log(`${game.cpu.name} played ${computerCard.name}, with an attack of ${computerCard.damage}`);
 
     if (playerCard.damage === computerCard.damage) {
       console.log(`Cards have equal damage value. No one scores`);
-      return;
     } else {
       winner = (playerCard.damage > computerCard.damage ? game.player : game.cpu);
+      winner.winHand();
     }
-    winner.winHand();
+
+    console.log(`Score`);
+    console.log(`${game.player.name}: ${game.player.roundScore}`);
+    console.log(`${game.cpu.name}: ${game.cpu.roundScore}`);
   }
 }
 
@@ -130,18 +129,20 @@ constructor(name) {
   this.gameScore = 0;
 }
 
-/* Methods */
   chooseRandomCard() {
     let index = Math.floor(Math.random() * this.hand.length);
     return this.hand.splice(index, 1)[0];
   }
   winHand() {
     this.roundScore++;
+    console.log(`${this.name} wins the hand.`)
   }
   winRound() {
     this.gameScore ++;
   }
 }
+
+
 
 
 const game = new Game;
@@ -150,8 +151,4 @@ game.newRound();
 game.rounds[0].deal();
 
 game.rounds[0].playHand();
-
-console.log(game.cpu.roundScore);
-console.log(game.player.roundScore);
-
 
