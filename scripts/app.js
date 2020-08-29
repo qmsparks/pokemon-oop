@@ -64,18 +64,21 @@ class Deck {
   }
 
   shuffle() {
-
-    while(this.baseDeck.length > 0) {
+    // shuffles cards randomly from based deck into working deck, assigning each one a unique id based off their index in that array
+    for(let i = 0; i < 18; i++){
       let index = Math.floor(Math.random() * this.baseDeck.length);
-      this.deck.push(this.baseDeck.splice(index, 1)[0]);
+      let card = this.baseDeck.splice(index, 1)[0];
+      card.id = i;
+      this.deck.push(card);
     }
-  }
+}
 
   deal(hand, player) {
+    // deals three cards to a player, and gives the dom element the same id as the corresponding card object
+    // NOTE appended a blank image li for if I want to actually style the cards in the dom
     for (let i = 0; i < 3; i++) {
       let cardData = this.deck.splice(0, 1)[0];
-      cardData.domClass = i;
-      let $card = $(`<ul class="card ${i}"/>`).append($('<li class="img" />'));
+      let $card = $(`<ul class="card" id="${cardData.id}"/>`).append($('<li class="img" />'));
       $card.append(`<li class="name">${cardData.name}</li>`, `<li class ="damage">${cardData.damage}</li>`);
       hand.append($card);
       player.hand.push(cardData);
@@ -83,6 +86,7 @@ class Deck {
   }
   
   discard() {
+    // removes selected cards from the player object's hand array, and from the dom
     this.discardPile.push(game.player.card, game.cpu.card);
     $cpuCard.remove();
     $playerCard.remove();
@@ -96,12 +100,14 @@ class Game {
   }
 
   getCard($clickedCard) {
-    for(let i = 0; i < game.player.hand.length; i++) {
-      if($clickedCard.hasClass(`${i}`)) {
-        game.player.card = game.player.hand.splice(i,1)[0];
-      }
+    // ensures that clicking a card accurately effects both the data and the visuals 
+    let cardId = $clickedCard.attr('id');
+    let cardIndex = game.player.hand.findIndex(function(element) {
+      return element.id == cardId; });
+      
+      game.player.card = game.player.hand.splice(cardIndex, 1)[0];
     }
-  }
+
 
   checkWinner() {
     let winner = {};
@@ -110,6 +116,29 @@ class Game {
     } else {
       winner = (this.player.card.damage > this.cpu.card.damage ? this.player : this.cpu);
       winner.winHand();
+    }
+  }
+
+  updateScore() {
+    // puts accurate score on the page
+    $('#eggbert-score').text(game.player.roundScore);
+    $('#eggbert-rounds').text(game.player.gameScore);
+
+    $('#computer-score').text(game.cpu.roundScore);
+    $('#computer-rounds').text(game.cpu.gameScore);
+  }
+
+  newRound(){
+
+    (this.player.roundScore > this.cpu.roundScore ? this.player.winRound() : this.cpu.winRound);
+    this.player.roundScore = 0;
+    this.cpu.roundScore = 0;
+
+    if (deck.deck.length < 6) {
+      $('#score').append($('<p>Game Over!</p>'));
+    } else {
+      deck.deal($('#cpu-hand'), game.cpu);
+      deck.deal($('#player-hand'), game.player);
     }
   }
 
@@ -131,24 +160,16 @@ constructor(name) {
     let index = Math.floor(Math.random() * this.hand.length);
     this.card = this.hand.splice([index], 1)[0];
 
-  $cpuCard = $(`#cpu-hand .${this.card.domClass}`);
+    $cpuCard = $(`#${this.card.id}`);
   }
 
   winHand(winnerObject) {
     this.roundScore++;
-    // if(this === game.player) {
-    //   $('#eggbert-score').text(this.roundScore);
-    // } else {
-    //   $('#computer-score').text(this.roundScore);
-    // }
+    game.updateScore();
   }
   winRound() {
     this.gameScore ++;
-    // if(this === game.player) {
-    //   $('#eggbert-rounds').text(this.gameScore);
-    // } else {
-    //   $('#computer-rounds').text(this-gameScore);
-    // }
+    game.updateScore();
   }
 
 }
@@ -157,7 +178,6 @@ const deck = new Deck;
 const game = new Game;
 let $cpuCard = {};
 let $playerCard = {};
-
 
   deck.shuffle();
   deck.deal($('#cpu-hand'), game.cpu);
@@ -170,14 +190,17 @@ $('#player-hand').on('click', 'ul', function(e) {
   $playerCard = $(e.target);
   game.getCard($(e.target));
   game.checkWinner();
-  updateScore();
   deck.discard();
+
+  if (game.cpu.hand.length === 0) {
+    game.newRound();
+  }
 });
 
-const updateScore = function() {
-  $('#eggbert-score').text(game.player.roundScore);
-  $('#eggbert-rounds').text(game.player.gameScore);
+// const updateScore = function() {
+//   $('#eggbert-score').text(game.player.roundScore);
+//   $('#eggbert-rounds').text(game.player.gameScore);
 
-  $('#computer-score').text(game.cpu.roundScore);
-  $('#computer-rounds').text(game.cpu.gameScore);
-}
+//   $('#computer-score').text(game.cpu.roundScore);
+//   $('#computer-rounds').text(game.cpu.gameScore);
+// }
