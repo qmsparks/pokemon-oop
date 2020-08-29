@@ -71,9 +71,18 @@ class Deck {
     }
   }
 
-  deal() {
-      game.player.hand = this.deck.splice(0, 3);
-      game.cpu.hand = this.deck.splice(0, 3);
+  deal(hand, player) {
+      // game.player.hand = this.deck.splice(0, 3);
+      // game.cpu.hand = this.deck.splice(0, 3);
+    
+
+    for (let i = 0; i < 3; i++) {
+      let cardData = this.deck.splice(0, 1)[0];
+      let $card = $(`<ul id="card${i}"/>`).append($('<li class="img" />'));
+      $card.append(`<li class="name">${cardData.name}</li>`, `<li class ="damage">${cardData.damage}</li>`);
+      hand.append($card);
+      player.hand.push(cardData);
+    }
   }
   
 
@@ -126,6 +135,7 @@ class Game {
 class Player {
 constructor(name) {
   this.name = name;
+  this.hand = [];
   this.roundScore = 0;
   this.gameScore = 0;
   this.card = {};
@@ -162,4 +172,16 @@ const beginGame = function() {
 }
 
 
-beginGame();
+
+
+$('button').on('click', function() {
+  deck.shuffle();
+  deck.deal($('#cpu-hand'), game.cpu);
+  deck.deal($('#player-hand'), game.player);
+  console.log(game);
+
+})
+
+
+const $cpuHand = $('#cpu-hand');
+    const $playerHand = $('#cpu-hand');
