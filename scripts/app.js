@@ -75,10 +75,9 @@ class Deck {
 
   deal(hand, player) {
     // deals three cards to a player, and gives the dom element the same id as the corresponding card object
-    // NOTE appended a blank image li for if I want to actually style the cards in the dom
     for (let i = 0; i < 3; i++) {
       let cardData = this.deck.splice(0, 1)[0];
-      let $card = $(`<ul class="card" id="${cardData.id}"/>`).append($('<li class="img" />'));
+      let $card = $(`<ul class="card" id="${cardData.id}"/>`);
       $card.append(`<li class="name">${cardData.name}</li>`, `<li class ="damage">${cardData.damage}</li>`);
       hand.append($card);
       player.hand.push(cardData);
@@ -106,13 +105,13 @@ class Game {
       return element.id == cardId; });
       
       game.player.card = game.player.hand.splice(cardIndex, 1)[0];
+      console.log(`${game.player.name} chooses ${game.player.card.name}`);
     }
 
 
   checkWinner() {
     let winner = {};
     if (this.player.card.damage === this.cpu.card.damage) {
-      console.log(`Tie`);
     } else {
       winner = (this.player.card.damage > this.cpu.card.damage ? this.player : this.cpu);
       winner.winHand();
@@ -129,11 +128,14 @@ class Game {
   }
 
   newRound(){
+    // checks to see who won previous round, calls the appropriate function to reflect that, and resets both players to 0 for next round
+    (this.player.roundScore > this.cpu.roundScore ? this.player.winRound() : this.cpu.winRound());
 
-    (this.player.roundScore > this.cpu.roundScore ? this.player.winRound() : this.cpu.winRound);
     this.player.roundScore = 0;
     this.cpu.roundScore = 0;
+    this.updateScore();
 
+    // deals new round if there are enough cards, or else displays 'game over' message
     if (deck.deck.length < 6) {
       $('#score').append($('<p>Game Over!</p>'));
     } else {
@@ -156,15 +158,17 @@ constructor(name) {
 }
 
   chooseRandomCard() {
+    // cpu randomly selects and card and ties it to the corresponding element in the dom
 
     let index = Math.floor(Math.random() * this.hand.length);
     this.card = this.hand.splice([index], 1)[0];
-
+    console.log(`${this.name} chooses ${this.card.name}`);
     $cpuCard = $(`#${this.card.id}`);
   }
 
-  winHand(winnerObject) {
+  winHand() {
     this.roundScore++;
+    console.log(`${this.name} Wins!`);
     game.updateScore();
   }
   winRound() {
@@ -185,7 +189,7 @@ let $playerCard = {};
 
 
 
-$('#player-hand').on('click', 'ul', function(e) {
+$('#player-hand').on('click', '.card',function(e) {
   game.cpu.chooseRandomCard();
   $playerCard = $(e.target);
   game.getCard($(e.target));
@@ -196,11 +200,3 @@ $('#player-hand').on('click', 'ul', function(e) {
     game.newRound();
   }
 });
-
-// const updateScore = function() {
-//   $('#eggbert-score').text(game.player.roundScore);
-//   $('#eggbert-rounds').text(game.player.gameScore);
-
-//   $('#computer-score').text(game.cpu.roundScore);
-//   $('#computer-rounds').text(game.cpu.gameScore);
-// }
