@@ -109,7 +109,7 @@ class Game {
       console.log(`Tie`);
     } else {
       winner = (this.player.card.damage > this.cpu.card.damage ? this.player : this.cpu);
-      console.log(winner);
+      winner.winHand();
     }
   }
 
@@ -134,12 +134,23 @@ constructor(name) {
   $cpuCard = $(`#cpu-hand .${this.card.domClass}`);
   }
 
-  winHand() {
+  winHand(winnerObject) {
     this.roundScore++;
+    // if(this === game.player) {
+    //   $('#eggbert-score').text(this.roundScore);
+    // } else {
+    //   $('#computer-score').text(this.roundScore);
+    // }
   }
   winRound() {
     this.gameScore ++;
+    // if(this === game.player) {
+    //   $('#eggbert-rounds').text(this.gameScore);
+    // } else {
+    //   $('#computer-rounds').text(this-gameScore);
+    // }
   }
+
 }
 
 const deck = new Deck;
@@ -147,11 +158,11 @@ const game = new Game;
 let $cpuCard = {};
 let $playerCard = {};
 
-$('button').on('click', function() {
+
   deck.shuffle();
   deck.deal($('#cpu-hand'), game.cpu);
   deck.deal($('#player-hand'), game.player);
-});
+
 
 
 $('#player-hand').on('click', 'ul', function(e) {
@@ -159,8 +170,14 @@ $('#player-hand').on('click', 'ul', function(e) {
   $playerCard = $(e.target);
   game.getCard($(e.target));
   game.checkWinner();
+  updateScore();
   deck.discard();
 });
 
+const updateScore = function() {
+  $('#eggbert-score').text(game.player.roundScore);
+  $('#eggbert-rounds').text(game.player.gameScore);
 
-
+  $('#computer-score').text(game.cpu.roundScore);
+  $('#computer-rounds').text(game.cpu.gameScore);
+}

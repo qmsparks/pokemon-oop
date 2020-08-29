@@ -27,6 +27,9 @@ section {
 
 ul {
   list-style-type: none;
+  text-align: center;
+}
+.card {
   border: 3px solid blue;
   width: 100px;
   height: 150px;
@@ -36,4 +39,21 @@ ul {
 button {
   position: absolute;
   width: 75px;
+}
+
+.container {
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+
+  
+}
+
+#score {
+  height: 200px;
+  width: 75vw;
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+
 }
