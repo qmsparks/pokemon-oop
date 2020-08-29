@@ -74,6 +74,7 @@ class Deck {
   deal(hand, player) {
     for (let i = 0; i < 3; i++) {
       let cardData = this.deck.splice(0, 1)[0];
+      cardData.domClass = i;
       let $card = $(`<ul class="card ${i}"/>`).append($('<li class="img" />'));
       $card.append(`<li class="name">${cardData.name}</li>`, `<li class ="damage">${cardData.damage}</li>`);
       hand.append($card);
@@ -83,6 +84,8 @@ class Deck {
   
   discard() {
     this.discardPile.push(game.player.card, game.cpu.card);
+    $cpuCard.remove();
+    $playerCard.remove();
   }
 }
 
@@ -92,13 +95,11 @@ class Game {
     this.player = new Player('Eggbert');    
   }
 
-  getCard(clickedCard) {
-    if ($(clickedCard).hasClass('0')){
-      game.player.card = game.player.hand[0];
-    } else if ($(clickedCard).hasClass('1')){
-      game.player.card = game.player.hand[1];
-    } else {
-      game.player.card = game.player.hand[2];
+  getCard($clickedCard) {
+    for(let i = 0; i < game.player.hand.length; i++) {
+      if($clickedCard.hasClass(`${i}`)) {
+        game.player.card = game.player.hand.splice(i,1)[0];
+      }
     }
   }
 
@@ -128,12 +129,9 @@ constructor(name) {
   chooseRandomCard() {
 
     let index = Math.floor(Math.random() * this.hand.length);
-    this.card = this.hand[index];
+    this.card = this.hand.splice([index], 1)[0];
 
-  $cpuCard = $(`#cpu-hand .${index}`);
-  console.log(this.card);
-
-  $cpuCard.remove();
+  $cpuCard = $(`#cpu-hand .${this.card.domClass}`);
   }
 
   winHand() {
@@ -147,6 +145,7 @@ constructor(name) {
 const deck = new Deck;
 const game = new Game;
 let $cpuCard = {};
+let $playerCard = {};
 
 $('button').on('click', function() {
   deck.shuffle();
@@ -157,8 +156,8 @@ $('button').on('click', function() {
 
 $('#player-hand').on('click', 'ul', function(e) {
   game.cpu.chooseRandomCard();
-  game.getCard(e.target);
-  $(e.target).remove();
+  $playerCard = $(e.target);
+  game.getCard($(e.target));
   game.checkWinner();
   deck.discard();
 });
