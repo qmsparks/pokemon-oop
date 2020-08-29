@@ -60,7 +60,7 @@ class Deck {
   constructor() {
     this.baseDeck = cards;
     this.deck = [];
-    this.discard = [];
+    this.discardPile = [];
   }
 
   shuffle() {
@@ -72,20 +72,18 @@ class Deck {
   }
 
   deal(hand, player) {
-      // game.player.hand = this.deck.splice(0, 3);
-      // game.cpu.hand = this.deck.splice(0, 3);
-    
-
     for (let i = 0; i < 3; i++) {
       let cardData = this.deck.splice(0, 1)[0];
-      let $card = $(`<ul id="card${i}"/>`).append($('<li class="img" />'));
+      let $card = $(`<ul class="card ${i}"/>`).append($('<li class="img" />'));
       $card.append(`<li class="name">${cardData.name}</li>`, `<li class ="damage">${cardData.damage}</li>`);
       hand.append($card);
       player.hand.push(cardData);
     }
   }
   
-
+  discard() {
+    this.discardPile.push(game.player.card, game.cpu.card);
+  }
 }
 
 class Game {
@@ -94,40 +92,26 @@ class Game {
     this.player = new Player('Eggbert');    
   }
 
-  playGame() {
-    
-    for(let i = 0; i < 3; i++) {
-      this.cpu.chooseRandomCard();
-      this.player.chooseRandomCard();
-      
-      //TODO allow player to choose their card 
-      // this.player.chooseCard();
-
-      let winner = {};
-      let loser = {};
-
-      if (this.player.card.damage === this.cpu.card.damage) {
-        console.log(`${this.player.name}'s ${this.player.card.name} and ${this.cpu.name}'s ${this.cpu.card.name} reach a stalemate.`);
-      } else {
-        winner = (this.player.card.damage > this.cpu.card.damage ? this.player : this.cpu);
-        winner.winHand();
-
-        if(winner === this.player) {
-          loser = this.cpu;
-        } else {
-          loser = this.player;
-        }
-        
-        console.log(`${winner.name}'s ${winner.card.name} beats ${loser.name}'s ${loser.card.name}`);
-      }
+  getCard(clickedCard) {
+    if ($(clickedCard).hasClass('0')){
+      game.player.card = game.player.hand[0];
+    } else if ($(clickedCard).hasClass('1')){
+      game.player.card = game.player.hand[1];
+    } else {
+      game.player.card = game.player.hand[2];
     }
-
-    deck.discard.push(this.cpu.card, this.player.card);
   }
 
-  trackScore() {
-    //  TODO adjust gameScore and resent roundScore at the end of each round
+  checkWinner() {
+    let winner = {};
+    if (this.player.card.damage === this.cpu.card.damage) {
+      console.log(`Tie`);
+    } else {
+      winner = (this.player.card.damage > this.cpu.card.damage ? this.player : this.cpu);
+      console.log(winner);
+    }
   }
+
 }
 
 
@@ -142,12 +126,14 @@ constructor(name) {
 }
 
   chooseRandomCard() {
+
     let index = Math.floor(Math.random() * this.hand.length);
-    this.card = this.hand.splice(index, 1)[0];
-  }
+    this.card = this.hand[index];
 
-  chooseCard() {
+  $cpuCard = $(`#cpu-hand .${index}`);
+  console.log(this.card);
 
+  $cpuCard.remove();
   }
 
   winHand() {
@@ -160,28 +146,22 @@ constructor(name) {
 
 const deck = new Deck;
 const game = new Game;
-
-const beginGame = function() { 
-  deck.shuffle();
-  while(deck.deck.length >= 6) {
-    // console.log(`Dealing new hands`);
-    deck.deal();
-    game.playGame();
-    console.log(`\n`);
-  }
-}
-
-
-
+let $cpuCard = {};
 
 $('button').on('click', function() {
   deck.shuffle();
   deck.deal($('#cpu-hand'), game.cpu);
   deck.deal($('#player-hand'), game.player);
-  console.log(game);
-
-})
+});
 
 
-const $cpuHand = $('#cpu-hand');
-    const $playerHand = $('#cpu-hand');
+$('#player-hand').on('click', 'ul', function(e) {
+  game.cpu.chooseRandomCard();
+  game.getCard(e.target);
+  $(e.target).remove();
+  game.checkWinner();
+  deck.discard();
+});
+
+
+
