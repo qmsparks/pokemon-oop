@@ -57,9 +57,9 @@ const baseDeck = [
 ]
 
 class Game {
-	constructor() {
+	constructor(playerName='Eggbert') {
 		this.player = new Player({
-			name: 'Eggbert'
+			name: playerName
 		})
 
 		this.computer = new Player({
@@ -94,8 +94,10 @@ class Game {
 		})
 	}
 
+	// TODO reconfigure this so instead of returning something to log, it triggers some dom manipulation
 	handleScore() {
 		const playerWon = this.round.compareCards();
+
 		if (playerWon === null) {
 			return "Tie";
 		}
@@ -149,8 +151,6 @@ class Card {
 	}
 }
 
-
-
 class Player {
 	constructor(configObj) {
 		this.name = configObj.name;
@@ -165,11 +165,11 @@ class Player {
 
 		const index = this.hand.cards.findIndex(matchingIndex);
 
-		return this.hand.cards.splice(index, 1)[0];
+		const card = this.hand.cards.splice(index, 1)[0];
+		return card;
 	}
 
 }
-
 
 class Round {
 	constructor(configObj) {
@@ -185,7 +185,3 @@ class Round {
 	}
 
 }
-
-
-const game = new Game();
-game.deal();

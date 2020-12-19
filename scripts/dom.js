@@ -1,15 +1,49 @@
-const logHand = function() {
-    console.log(`Computer has ${game.player.hand.cards.length} cards remaining`);
-    console.log(game.player.hand.cards);
+// ANCHOR game logic variables
+let game;
+let player;
+let computer;
+
+
+// ANCHOR jQuery variables
+const $startBtn = $('#start-game');
+const $drawBtn = $('#draw');
+const $comHand = $('#com-hand');
+const $playerHand = $('#player-hand');
+
+
+// ANCHOR helper functions
+const renderCards = function(cardArr, targetHand, htmlClass) {
+	cardArr.forEach(card => {
+		targetHand.append(`
+			<li class="${htmlClass}" id="${card.id}">
+				<p>${card.name}</p>
+				<p>${card.damage}</p>
+			</li>
+		`)
+	})
 }
 
-const testRound = function(num) {
-    game.startRound(game.player.chooseCard(num));
-    console.log(game.handleScore());
-    console.log(game.player.score);
-    console.log(game.computer.score);
-    game.endRound();
-    logHand();
+const renderScore = function() {
+	console.log('Update! That! Score!!');
 }
 
-logHand();
+
+// ANCHOR event listeners
+$startBtn.on('click', () => {
+	game = new Game();
+	player = game.player;
+	computer = game.computer;
+	$startBtn.toggleClass('hidden');
+	$drawBtn.toggleClass('hidden');
+})
+
+$drawBtn.on('click', () => {
+	game.deal();
+	renderCards(player.hand.cards, $playerHand, 'card');
+	renderCards(computer.hand.cards, $comHand, 'card facedown');
+})
+
+$playerHand.on('click', '.card', e => {
+	const cardId = Number(e.target.id);
+	game.startRound(player.chooseCard(cardId));
+})
