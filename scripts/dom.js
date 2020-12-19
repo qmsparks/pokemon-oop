@@ -44,6 +44,8 @@ const moveCardsToField = function(round) {
 const renderScore = function() {
 	// TODO
 	console.log('Update! That! Score!!');
+	$('#com-score').text(computer.score);
+	$('#player-score').text(player.score);
 }
 
 
