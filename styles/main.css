@@ -1,7 +1,91 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	display: flex;
+	justify-content: space-between;
+}
+
+aside {
+	width: 30vw;
+}
+
+aside, #playfield, #arena, #arena-buttons, .target {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#score {
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+.score-display {
+	width: 15vw;
+	height: 100px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+
+#playfield {
+	height: 100vh;
+	flex-direction: column;
+	justify-content: space-evenly;
+}
+
+
+#arena {
+	height: 400px;
+	width: 650px;
+	background-color:mediumaquamarine;
+	justify-content: space-evenly;
+}
+
+.hand {
+	display: flex;
+	height: 200px;
+	width: 470px;
+	justify-content: center;
+}
+
+.target, #arena-buttons {
+	width: 125px;
+	height: 185px;
+
+}
+
+.card {
+	list-style-type: none;
+	width: 115px;
+	height: 175px;
+	margin: 10px 20px;
+	border: 2px solid black;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+
+.target {
+	background-color: rgba(0, 0, 0, 0.219);
+}
+
+.target .card {
+	margin: 0;
+}
+
+
 .hidden {
-    display: none;
+	display: none;
 }
 
 .facedown {
-    color: red;
+	background-color: lightblue;
 }

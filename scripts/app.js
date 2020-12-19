@@ -87,10 +87,10 @@ class Game {
 		}
 	}
 
-	startRound(playerCard) {
+	startRound(playerCard, comCard) {
 		this.round = new Round({
 			playerCard: playerCard,
-			comCard: this.computer.hand.getRandomCard()
+			comCard: comCard
 		})
 	}
 

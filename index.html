@@ -14,38 +14,41 @@
   <title>Pokemon OOP</title>
 </head>
 <body>
-  <header id="score">
-
-    <article class="score-display">
-      <h3>Eggbert</h3>
-      <span id="player-score"></span>
-    </article>
-
-    <article class="score-display">
+  <aside id="score">
+    <article class="score-display hidden">
       <h3>Computer</h3>
-      <span id="com-score"></span>
+      <span id="com-score">0</span>
     </article>
 
-  </header>
+    <article class="score-display hidden">
+      <h3 id="player-name"></h3>
+      <span id="player-score">0</span>
+    </article>
+  </aside>
 
   <main id="playfield">
     
-    <ul id="com-hand"></ul>
+    <ul id="com-hand" class="hand"></ul>
 
     <section id="arena">
+      <span id="player-target" class="target hidden"></span>
 
-      <button id="start-game">Begin Game</button>
+      <span id="arena-buttons">
+        <button id="start-game">Begin Game</button>
+        <button id="draw" class="hidden">Draw cards</button>
+      </span>
 
+      <span id="com-target" class="target hidden"></span>
     </section>
     
-    <ul id="player-hand"></ul>
+    <ul id="player-hand" class="hand"></ul>
 
+    
   </main>
 
-  <footer id="buttons">
-    <!-- TODO Would be fun to render this as, y'know, the deck instead of a button -->
-    <button id="draw" class="hidden">Draw cards</button>
-  </footer>
+  <aside id="discard">
+    <span id="discard" class="target hidden"></span>
+  </aside>
 
 </body>
 </html>
