@@ -76,9 +76,14 @@ class Game {
 	}
 
 	deal() {
-		for (let i = 0; i < 3; i++) {
-			this.player.hand.draw(this.drawDeck);
-			this.computer.hand.draw(this.drawDeck);
+		if(this.drawDeck.cards.length >= 3) {
+			for (let i = 0; i < 3; i++) {
+				this.player.hand.draw(this.drawDeck);
+				this.computer.hand.draw(this.drawDeck);
+			}
+		} else {
+			// TODO turn this into logic that will actually work for the game, but: test purposes
+			console.log('No more cards, game over');
 		}
 	}
 
@@ -89,8 +94,23 @@ class Game {
 		})
 	}
 
+	handleScore() {
+		const playerWon = this.round.compareCards();
+		if (playerWon === null) {
+			return "Tie";
+		}
+
+		if(playerWon) {
+			this.player.score++;
+			return "Eggbert wins";
+		} else {
+			this.computer.score++;
+			return "The Computer wins"
+		}
+	}
+
 	endRound() {
-		this.discard.push(this.round.playerCard, this.round.comCard);
+		this.discard.cards.push(this.round.playerCard, this.round.comCard);
 	}
 
 }
@@ -137,6 +157,7 @@ class Player {
 		this.hand = new Deck({
 			cards: []
 		});
+		this.score = 0;
 	}
 
 	chooseCard(cardId) {
@@ -157,7 +178,10 @@ class Round {
 	}
 
 	compareCards() {
-		// And this will be where we determine the winner of each round
+		if (this.playerCard.damage === this.comCard.damage) {
+			return null;
+		}
+		return this.playerCard.damage > this.comCard.damage ? true : false
 	}
 
 }
