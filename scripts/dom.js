@@ -61,9 +61,11 @@ const playRound = function() {
 }
 
 const endRound = function() {
-	// TODO
-		$('#discard-pile').append($('.in-play'));
-		renderScore();
+	// TODO animation!
+	$('.in-play').removeClass('in-play').addClass('discarded');
+
+	$('#discard-pile').append($('.discarded'));
+	renderScore();
 }
 
 

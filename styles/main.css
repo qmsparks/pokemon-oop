@@ -84,10 +84,14 @@ aside, #playfield, #arena, #arena-buttons, .target {
 }
 
 
-.hidden {
+.hidden, .discarded {
 	display: none;
 }
 
 .facedown {
 	background-color: lightblue;
+}
+
+.discarded:first-child {
+	display: flex;
 }
