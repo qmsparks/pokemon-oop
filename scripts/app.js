@@ -94,25 +94,15 @@ class Game {
 		})
 	}
 
-	// TODO reconfigure this so instead of returning something to log, it triggers some dom manipulation
-	handleScore() {
+	handleRound() {
+		this.discard.cards.push(this.round.playerCard, this.round.comCard);
 		const playerWon = this.round.compareCards();
 
-		if (playerWon === null) {
-			return "Tie";
-		}
+		if (playerWon === null) return null;
 
-		if(playerWon) {
-			this.player.score++;
-			return "Eggbert wins";
-		} else {
-			this.computer.score++;
-			return "The Computer wins"
-		}
-	}
+		playerWon ? this.player.score++ : this.computer.score++;
 
-	endRound() {
-		this.discard.cards.push(this.round.playerCard, this.round.comCard);
+		return playerWon;
 	}
 
 }

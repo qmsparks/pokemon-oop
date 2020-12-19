@@ -10,7 +10,9 @@ body {
 }
 
 aside {
+	height: 50vh;
 	width: 30vw;
+	align-self: center;
 }
 
 aside, #playfield, #arena, #arena-buttons, .target {

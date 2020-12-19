@@ -36,9 +36,9 @@ const renderCards = function(cardArr, targetHand, htmlClass) {
 }
 
 const moveCardsToField = function(round) {
-	$playerTarget.append($(`#${round.playerCard.id}`));
-	$comTarget.append($(`#${round.comCard.id}`));
-	// playRound();
+	$playerTarget.append($(`#${round.playerCard.id}`).addClass('in-play'));
+	$comTarget.append($(`#${round.comCard.id}`).addClass('in-play'));
+	playRound();
 }
 
 const renderScore = function() {
@@ -49,15 +49,21 @@ const renderScore = function() {
 
 // ANCHOR game logic helper functions
 const playRound = function() {
-	// TODO
-	// This will be the function that calls the Game instance's handleScore() function
-	// And also deal with whatever animations I attach to this
+	// TODO this will be where whatever animation gets handled
+	const playerWon = game.handleRound();
+	
+	if (playerWon === null) console.log("Tie");
+	else {
+		playerWon ? console.log(`${player.name} wins`) : console.log("The computer wins");
+	}
+
+	endRound()
 }
 
 const endRound = function() {
 	// TODO
-	// Here we handle the discard, both in the Game istance and in the UI (which means, again, potentially some animation)
-	// This will also be where we call the renderScore function to update the UI
+		$('#discard-pile').append($('.in-play'));
+		renderScore();
 }
 
 
