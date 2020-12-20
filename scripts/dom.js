@@ -37,7 +37,7 @@ const renderCards = function(cardArr, targetHand, htmlClass) {
 
 const moveCardsToField = function(round) {
 	$playerTarget.append($(`#${round.playerCard.id}`).addClass('in-play'));
-	$comTarget.append($(`#${round.comCard.id}`).addClass('in-play'));
+	$comTarget.append($(`#${round.comCard.id}`).addClass('in-play').removeClass('facedown'));
 	playRound();
 }
 
@@ -51,15 +51,18 @@ const renderScore = function() {
 
 // ANCHOR game logic helper functions
 const playRound = function() {
-	// TODO this will be where whatever animation gets handled
 	const playerWon = game.handleRound();
 	
 	if (playerWon === null) console.log("Tie");
 	else {
 		playerWon ? console.log(`${player.name} wins`) : console.log("The computer wins");
 	}
+	
+	// TODO this will be where whatever animation gets handled
 
-	endRound()
+	setTimeout(() => {
+		endRound()
+	}, 2500)
 }
 
 const endRound = function() {
